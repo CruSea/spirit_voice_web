@@ -1,0 +1,59 @@
+.mood-tracker {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  width: 90%;
+  max-width: 500px;
+  margin-top: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.mood-title {
+  font-size: 1.2rem;
+  color: #3c2b84;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.mood-options {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mood-btn {
+  background: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  padding: 0.8rem 1rem;
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
+  cursor: pointer;
+}
+
+.mood-btn:hover {
+  transform: scale(1.05);
+  background: #4b3cc4;
+}
+
+.mood-btn.selected {
+  background: #ff5c8d;
+  box-shadow: 0 0 15px rgba(255, 92, 141, 0.5);
+}
+
+.mood-emoji {
+  font-size: 1.8rem;
+}
+
+.mood-label {
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
