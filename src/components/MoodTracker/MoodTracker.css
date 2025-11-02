@@ -1,59 +1,366 @@
 .mood-tracker {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  width: 90%;
-  max-width: 500px;
-  margin-top: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #d7e3fc 0%, #e3d9fc 100%);
   font-family: 'Poppins', sans-serif;
+  color: #2d2d2d;
+  padding: 1rem;
 }
 
-.mood-title {
-  font-size: 1.2rem;
-  color: #3c2b84;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.mood-options {
+.mood-header {
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+}
+
+.mood-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4b3cc4;
+  text-align: center;
+  flex: 1;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #4b3cc4;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover {
+  background: rgba(75, 60, 196, 0.1);
+}
+
+.header-spacer {
+  width: 40px;
+}
+
+.mood-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mood-description {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.verse-highlight {
+  background: rgba(75, 60, 196, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(75, 60, 196, 0.2);
+}
+
+.verse-highlight p {
+  font-style: italic;
+  color: #4b3cc4;
+  font-weight: 500;
+  margin: 0;
+}
+
+.recording-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.recording-section h2 {
+  color: #4b3cc4;
+  margin-bottom: 1.5rem;
+}
+
+.mic-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.record-button {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: none;
+  background: #6c63ff;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.record-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.6);
+}
+
+.record-button.recording {
+  background: #ff5c8d;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 92, 141, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 92, 141, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 92, 141, 0);
+  }
+}
+
+.timer {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #4b3cc4;
+}
+
+.transcription-section {
+  margin-bottom: 2rem;
+}
+
+.transcription-section h3 {
+  color: #4b3cc4;
+  margin-bottom: 1rem;
+}
+
+.transcription-box {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-height: 100px;
+}
+
+.transcription-box p {
+  margin: 0;
+  line-height: 1.6;
+  color: #555;
+}
+
+.emotions-section {
+  margin-bottom: 2rem;
+}
+
+.emotions-section h2 {
+  color: #4b3cc4;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.emotions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
-.mood-btn {
-  background: #6c63ff;
+.emotion-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.emotion-card:hover {
+  transform: translateY(-5px);
+}
+
+.emotion-emoji {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.emotion-name {
+  font-weight: 600;
+  color: #4b3cc4;
+  margin-bottom: 0.5rem;
+}
+
+.emotion-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #6c63ff;
+}
+
+.guidance-section {
+  margin-bottom: 2rem;
+}
+
+.guidance-section h2 {
+  color: #4b3cc4;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.guidance-section > p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.verse-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.verse-emoji {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.verse-card h3 {
+  color: #4b3cc4;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.verse-text {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.verse-reference {
+  font-weight: 600;
+  color: #6c63ff;
+  margin-bottom: 1rem;
+}
+
+.verse-description {
+  color: #777;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.explore-button {
+  background: #4b3cc4;
   color: white;
   border: none;
-  border-radius: 15px;
-  padding: 0.8rem 1rem;
-  width: 90px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
+  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
   cursor: pointer;
+  display: block;
+  margin: 2rem auto;
+  transition: background 0.3s ease;
 }
 
-.mood-btn:hover {
-  transform: scale(1.05);
-  background: #4b3cc4;
+.explore-button:hover {
+  background: #3227a8;
 }
 
-.mood-btn.selected {
-  background: #ff5c8d;
-  box-shadow: 0 0 15px rgba(255, 92, 141, 0.5);
+.journey-section {
+  margin-bottom: 2rem;
 }
 
-.mood-emoji {
+.journey-section h2 {
+  color: #4b3cc4;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.journey-section > p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.stat-emoji {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
   font-size: 1.8rem;
+  font-weight: 700;
+  color: #4b3cc4;
+  margin-bottom: 0.25rem;
 }
 
-.mood-label {
+.stat-label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.25rem;
+}
+
+.stat-sublabel {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.footer-section {
+  text-align: center;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(75, 60, 196, 0.1);
+  margin-top: 1rem;
+}
+
+.faith-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.faith-message {
+  color: #4b3cc4;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.copyright {
+  color: #777;
   font-size: 0.9rem;
-  margin-top: 0.3rem;
+}
+
+@media (max-width: 768px) {
+  .emotions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mood-header h1 {
+    font-size: 1.2rem;
+  }
 }

@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { voiceApi } from '../../services/voice.js'
 import './Recording.css'
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar/NavBar'
+import logo from '../../assets/wedaj.png'; 
 
 const VoiceRecorder = ({
   onRecordingComplete,
@@ -166,10 +168,13 @@ const VoiceRecorder = ({
     <div className="voice-recorder">
       {/* HEADER */}
       <header className="recorder-header">
-        <div className="logo">Wedaj 🌿</div>
+        <div className="logo">
+       <img src={logo} alt="Wedaj logo" className="logo-image" width="50px" />
+       </div>
+
         <div className="auth-buttons">
-          <button className="login-button" onClick={() =>navigate('log-in')}>Login</button>
-          <button className="signup-button" onClick={()=> navigate('sign-up')}>Sign Up</button>
+          <button className="login-button" onClick={() =>navigate('log-in')}>ግባ</button>
+          <button className="signup-button" onClick={()=> navigate('sign-up')}>ይመዝገቡ</button>
         </div>
       </header>
 
@@ -178,7 +183,7 @@ const VoiceRecorder = ({
         {/* GREETING - only at the beginning */}
         {showGreeting && (
           <div className="greeting">
-            Hey, how are you doing today? 🌿
+             ሰላም ዛሬ እንዴት ነህ?
           </div>
         )}
 
@@ -194,7 +199,7 @@ const VoiceRecorder = ({
         ) : (
           <div className="response-section">
             <div className="response-display">
-              <h3>Your AI Friend's Thoughts 💬</h3>
+              <h3>የወዳጅ ምላሽ💬</h3>
               <div className="response-text">
                 {isProcessing ? (
                   "Processing your voice... please wait 🌸"
@@ -208,7 +213,7 @@ const VoiceRecorder = ({
                 ) : (
                   <div className="audio-response-ready">
                     <p>Your AI response is ready! Click "Play Response" to listen. 🎵</p>
-                    <p className="response-note">Your voice has been processed and I'm here to support you. 🌿</p>
+                    <p className="response-note">ድምጽህን አዳምጨውዋለው እና አንተን ለመደገፍ እዚህ ነኝ። </p>
                   </div>
                 )}
               </div>
@@ -227,7 +232,7 @@ const VoiceRecorder = ({
                       {isPlayingResponse ? "Pause Response" : "Play Response"}
                     </button>
                     <button className="option-button ask-more" onClick={handleAskMore}>
-                      {error ? "Try Again" : "Ask More 🌼"}
+                      {error ? "እንደገና ሞክር" : "ተጨማሪ ጥያቄ🌼"}
                     </button>
                   </div>
                 </div>
@@ -268,9 +273,9 @@ const VoiceRecorder = ({
 
         <div className="instructions">
           {isRecording ? (
-            <p>I'm listening... speak freely 💬</p>
+            <p>እየሰማሁ ነው... በነጻነት ተናገሩ 💬</p>
           ) : showOptions ? null : (
-            <p>Take a deep breath and start sharing your thoughts ✨</p>
+            <p>ይረጋጉ እና ሀሳብዎን ያካፍሉ ✨</p>
           )}
         </div>
       </div>
