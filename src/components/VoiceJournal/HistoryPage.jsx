@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './HistoryPage.css'
+import logo from '../../assets/wedaj.png';
 
 const HistoryPage = ({ onLoginClick, onSignupClick, user, onLogout }) => {
   const [showMenu, setShowMenu] = useState(false)
@@ -52,7 +53,9 @@ const HistoryPage = ({ onLoginClick, onSignupClick, user, onLogout }) => {
   return (
     <div className="history-page">
       <header className="history-header">
-        <div className="logo">ወዳጅ</div>
+        <div className="logo">
+       <img src={logo} alt="Wedaj logo" className="logo-image" width="50px" />
+       </div>
         {user ? (
           <button className="hamburger-button" onClick={toggleMenu}>
             <svg viewBox="0 0 24 24" width="24" height="24">
@@ -126,7 +129,7 @@ const HistoryPage = ({ onLoginClick, onSignupClick, user, onLogout }) => {
       <div className="recorder-content">
         {/* GREETING - only at the beginning */}
         <div className="greeting">
-          Hey, how are you doing today? 🌿
+          ሰላም ዛሬ እንዴት ነህ? 🌿
         </div>
 
         {/* Recording button for quick access */}
@@ -147,7 +150,7 @@ const HistoryPage = ({ onLoginClick, onSignupClick, user, onLogout }) => {
         )}
 
         <div className="instructions">
-          <p>Take a deep breath and start sharing your thoughts ✨</p>
+          <p>ይረጋጉ እና ሀሳብዎን ያካፍሉ ✨</p>
         </div>
       </div>
     </div>

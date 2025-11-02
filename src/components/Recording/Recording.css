@@ -231,6 +231,17 @@
   letter-spacing: 0.5px;
 }
 
+/* Scrollable response text container */
+.response-text-container {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e8e8ff;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: #fefeff;
+  margin-top: 8px;
+}
+
 .response-text-content {
   color: #2d2d2d;
   font-size: 1rem;
@@ -238,6 +249,31 @@
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* Scrollbar styling for webkit browsers (Chrome, Safari, Edge) */
+.response-text-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.response-text-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.response-text-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.response-text-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Scrollbar styling for Firefox */
+.response-text-container {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
 /* Amharic text support */
@@ -348,6 +384,30 @@
   color: #555;
 }
 
+/* Post recording info */
+.post-recording-info {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.instructions-small {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.recording-options-container {
+  display: flex;
+  justify-content: center;
+}
+
+.recording-options {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .response-section {
@@ -357,6 +417,11 @@
 
   .response-text-content {
     font-size: 0.9rem;
+  }
+
+  .response-text-container {
+    max-height: 150px;
+    padding: 10px;
   }
 
   .play-audio-button {
@@ -371,5 +436,33 @@
   .record-button {
     width: 100px;
     height: 100px;
+  }
+
+  .recording-options {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .option-button {
+    width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .response-text-container {
+    max-height: 120px;
+    padding: 8px;
+  }
+
+  .voice-recorder {
+    padding: 1rem;
+  }
+
+  .greeting {
+    font-size: 1.3rem;
+  }
+
+  .timer-display {
+    font-size: 1.7rem;
   }
 }

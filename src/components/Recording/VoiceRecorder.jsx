@@ -3,7 +3,116 @@ import { voiceApi } from '../../services/voice.js'
 import './Recording.css'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/NavBar'
+import logo from '../../assets/wedaj.png';
 
+// ResponseDisplay Component
+const ResponseDisplay = ({
+  isProcessing,
+  error,
+  responseText,
+  audioUrl,
+  audioRef,
+  isPlayingResponse,
+  onPlayResponse,
+  onAskMore
+}) => {
+  if (isProcessing) {
+    return (
+      <div className="processing-state">
+        <p>Processing your voice... please wait 🌸</p>
+        <div className="loading-spinner"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="error-state">
+        <p>⚠️ {error}</p>
+        <button className="retry-button" onClick={onAskMore}>
+          Try Again
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="response-content">
+      {responseText && responseText.trim().length > 0 && (
+        <div className="text-response">
+          <p className="response-label">Response:</p>
+          <div className="response-text-container">
+            <p className="response-text-content amharic-text">{responseText}</p>
+          </div>
+        </div>
+      )}
+      
+      {audioUrl && audioRef.current ? (
+        <div className="audio-response-controls">
+          <button 
+            className="play-audio-button" 
+            onClick={onPlayResponse}
+            disabled={!audioRef.current}
+            aria-label={isPlayingResponse ? "Pause audio" : "Play audio"}
+          >
+            {isPlayingResponse ? (
+              <>
+                <span>⏸️</span> Pause
+              </>
+            ) : (
+              <>
+                <span>▶️</span> Play Audio
+              </>
+            )}
+          </button>
+        </div>
+      ) : null}
+      
+      {!responseText && !audioUrl && (
+        <div className="audio-response-ready">
+          <p>Your response is ready! 🌿</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ResponseOptions Component
+const ResponseOptions = ({
+  audioUrl,
+  audioRef,
+  isPlayingResponse,
+  onPlayResponse,
+  onAskMore
+}) => {
+  return (
+    <div className="post-recording-info">
+      <p className="instructions-small">What would you like to do next?</p>
+      <div className="recording-options-container">
+        <div className="recording-options">
+          {audioUrl && audioRef.current ? (
+            <button 
+              className="option-button read-response" 
+              onClick={onPlayResponse}
+              disabled={!audioRef.current}
+            >
+              {isPlayingResponse ? (
+                "⏸️ Pause"
+              ) : (
+                "▶️ Play Audio"
+              )}
+            </button>
+          ) : null}
+          <button className="option-button ask-more" onClick={onAskMore}>
+            Ask More 🌼
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Main VoiceRecorder Component
 const VoiceRecorder = ({
   onRecordingComplete,
   onLoginClick,
@@ -345,7 +454,9 @@ const VoiceRecorder = ({
     <div className="voice-recorder">
       {/* HEADER */}
       <header className="recorder-header">
-        <div className="logo">ወዳጅ</div>
+        <div className="logo">
+       <img src={logo} alt="Wedaj logo" className="logo-image" width="50px" />
+       </div>
         <div className="auth-buttons">
           <button className="login-button" onClick={() =>navigate('log-in')}>Login</button>
           <button className="signup-button" onClick={()=> navigate('sign-up')}>Sign Up</button>
@@ -357,7 +468,7 @@ const VoiceRecorder = ({
         {/* GREETING - only at the beginning */}
         {showGreeting && (
           <div className="greeting">
-            Hey, how are you doing today? 🌿
+            ሰላም ዛሬ እንዴት ነህ? 🌿
           </div>
         )}
 
@@ -373,82 +484,28 @@ const VoiceRecorder = ({
         ) : (
           <div className="response-section">
             <div className="response-display">
-              
               <div className="response-text">
-                {isProcessing ? (
-                  <div className="processing-state">
-                    <p>Processing your voice... please wait 🌸</p>
-                    <div className="loading-spinner"></div>
-                  </div>
-                ) : error ? (
-                  <div className="error-state">
-                    <p>⚠️ {error}</p>
-                    <button className="retry-button" onClick={handleAskMore}>
-                      Try Again
-                    </button>
-                  </div>
-                ) : (
-                  <div className="response-content">
-                    {responseText && responseText.trim().length > 0 && (
-                      <div className="text-response">
-                        <p className="response-label">Response:</p>
-                        <p className="response-text-content amharic-text">{responseText}</p>
-                      </div>
-                    )}
-                    {audioUrl && audioRef.current ? (
-                      <div className="audio-response-controls">
-                        <button 
-                          className="play-audio-button" 
-                          onClick={handlePlayResponse}
-                          disabled={isProcessing || !audioRef.current}
-                          aria-label={isPlayingResponse ? "Pause audio" : "Play audio"}
-                        >
-                          {isPlayingResponse ? (
-                            <>
-                              <span>⏸️</span> Pause
-                            </>
-                          ) : (
-                            <>
-                              <span>▶️</span> Play Audio
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    ) : null}
-                    {!responseText && !audioUrl && (
-                      <div className="audio-response-ready">
-                        <p>Your response is ready! 🌿</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <ResponseDisplay
+                  isProcessing={isProcessing}
+                  error={error}
+                  responseText={responseText}
+                  audioUrl={audioUrl}
+                  audioRef={audioRef}
+                  isPlayingResponse={isPlayingResponse}
+                  onPlayResponse={handlePlayResponse}
+                  onAskMore={handleAskMore}
+                />
               </div>
             </div>
             
             {!error && !isProcessing && (
-              <div className="post-recording-info">
-                <p className="instructions-small">What would you like to do next?</p>
-                <div className="recording-options-container">
-                  <div className="recording-options">
-                    {audioUrl && audioRef.current ? (
-                      <button 
-                        className="option-button read-response" 
-                        onClick={handlePlayResponse}
-                        disabled={!audioRef.current}
-                      >
-                        {isPlayingResponse ? (
-                          "⏸️ Pause"
-                        ) : (
-                          "▶️ Play Audio"
-                        )}
-                      </button>
-                    ) : null}
-                    <button className="option-button ask-more" onClick={handleAskMore}>
-                      Ask More 🌼
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ResponseOptions
+                audioUrl={audioUrl}
+                audioRef={audioRef}
+                isPlayingResponse={isPlayingResponse}
+                onPlayResponse={handlePlayResponse}
+                onAskMore={handleAskMore}
+              />
             )}
           </div>
         )}
@@ -487,7 +544,7 @@ const VoiceRecorder = ({
           {isRecording ? (
             <p>እየሰማሁ ነው... በነጻነት ተናገሩ 💬</p>
           ) : showOptions ? null : (
-            <p>Take a deep breath and start sharing your thoughts ✨</p>
+            <p>ይረጋጉ እና ሀሳብዎን ያካፍሉ ✨</p>
           )}
         </div>
       </div>
