@@ -1,24 +1,45 @@
 .history-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #2a4a8c, #1a2a6c);
-  color: white;
+  background: linear-gradient(180deg, #d7e3fc 0%, #e3d9fc 100%);
+  font-family: 'Poppins', sans-serif;
+  color: #2d2d2d;
   display: flex;
   flex-direction: column;
+  position: relative;
+  padding: 2rem;
 }
 
 .history-header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
 }
 
-.back-button {
+.logo {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #4b3cc4;
+}
+
+.hamburger-button {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(75, 60, 196, 0.1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s;
+}
+
+.hamburger-button:hover {
+  background: rgba(75, 60, 196, 0.2);
 }
 
 .auth-buttons {
@@ -28,135 +49,199 @@
 
 .login-button, .signup-button {
   background: none;
-  border: 1px solid white;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
+  border: 1px solid #4b3cc4;
+  color: #4b3cc4;
   font-size: 0.9rem;
-  transition: background 0.2s;
+  padding: 0.4rem 0.9rem;
+  margin-left: 0.6rem;
+  border-radius: 10px;
+  transition: all 0.3s;
+  cursor: pointer;
 }
 
 .login-button:hover, .signup-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #4b3cc4;
+  color: white;
 }
 
-.history-content {
+.recorder-content {
   flex: 1;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.history-content h1 {
-  text-align: center;
+.greeting {
   margin-bottom: 2rem;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #4b3cc4;
+  animation: pulseText 2s infinite ease-in-out;
+}
+
+@keyframes pulseText {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+.recording-container {
+  position: relative;
+  margin: 2rem 0;
+}
+
+.record-button {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: none;
+  background: #6c63ff;
+  color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(108, 99, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.record-button:hover {
+  transform: scale(1.05);
+}
+
+.mic-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instructions {
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+.primary-button {
+  background: #4b3cc4;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  transition: background 0.3s;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.primary-button:hover {
+  background: #3227a8;
 }
 
 .empty-state {
   text-align: center;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .empty-state p {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-size: 1.1rem;
 }
 
-.primary-button {
-  background: #4285f4;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.primary-button:hover {
-  transform: scale(1.05);
-}
-
-.history-list {
+.auth-prompt {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
 }
 
-.history-item {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 1rem;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+.auth-prompt .auth-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
 }
 
-.history-item-header {
+/* Sidebar Menu Styles */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1000;
+}
+
+.sidebar-menu {
+  background: #4b3cc4;
+  color: white;
+  width: 280px;
+  height: 100%;
+  padding: 0;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.timestamp {
-  font-size: 0.9rem;
-  opacity: 0.8;
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
 }
 
-.expand-button {
+.close-button {
   background: none;
-  border: 2px solid white;
-  color: white;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.history-item-content {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.response-preview {
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.history-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.action-button {
-  background: rgba(255, 255, 255, 0.2);
   border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-item {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: background 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.action-button:hover {
-  transform: scale(1.1);
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.play-button {
-  color: #4285f4;
+.sidebar-item.logout-item {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
 }
 
-.download-button {
-  color: #34a853;
+.sidebar-item svg {
+  fill: white;
 }
 
-.delete-button {
-  color: #ea4335;
+.sidebar-item span {
+  font-size: 1rem;
 }

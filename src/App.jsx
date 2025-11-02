@@ -1,187 +1,81 @@
-import { useState, useEffect, useRef } from 'react'
-import './App.css'
-import VoiceRecorder from './components/Recording/VoiceRecorder'
-import ResponsePage from './components/AiInteraction/AiResponse'
-import HistoryPage from './components/VoiceJournal/HistoryPage'
-import LoginForm from './components/Auth/LoginForm'
-import SignupForm from './components/Auth/SignupForm'
+// App.jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Login from './components/Auth/LoginForm';
+import Signup from './components/Auth/SignupForm';
+import VoiceRecorder from './components/Recording/VoiceRecorder';
+import UserAccount from './components/Settings/UserAccount';
+import HistoryPage from './components/VoiceJournal/HistoryPage';
+import MoodTracker from './components/MoodTracker/MoodTracker';
+import BibleGuidance from './components/BibleGuidance/BibleGuidance';
+import logo from './assets/wedaj.png'; 
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home') // home, processing, response, history, login, signup
-  const [currentResponse, setCurrentResponse] = useState('')
-  const [recordings, setRecordings] = useState([])
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [currentUser, setCurrentUser] = useState(null)
-  const [isPlayingResponse, setIsPlayingResponse] = useState(false)
-  const speechSynthesisRef = useRef(null)
+  const [user, setUser] = useState(null);
+  // Sample recordings data for the user account page
+  const [recordings] = useState([
+    {
+      id: 1,
+      timestamp: '2023-05-15 14:30',
+      response: 'I understand you\'re feeling overwhelmed today. Remember that it\'s okay to feel this way, and taking time for yourself is important. Perhaps try a short walk or some deep breathing exercises.'
+    },
+    {
+      id: 2,
+      timestamp: '2023-05-10 09:15',
+      response: 'It sounds like you had a meaningful conversation with a friend. Cherishing these connections is vital for our well-being. Consider expressing gratitude for their presence in your life.'
+    }
+  ]);
 
-  // Clean up speech synthesis when component unmounts
+  // initialize user from localStorage (if present)
   useEffect(() => {
-    return () => {
-      if (speechSynthesisRef.current) {
-        window.speechSynthesis.cancel()
-      }
+    try {
+      const stored = localStorage.getItem('loggedInUser');
+      if (stored) setUser(JSON.parse(stored) || stored);
+    } catch (e) {
+      // fallback: use raw value
+      const raw = localStorage.getItem('loggedInUser');
+      if (raw) setUser(raw);
     }
-  }, [])
-
-  const handleRecordingComplete = (audioBlob) => {
-    // Simulate AI processing
-    setTimeout(() => {
-      // Mock AI response
-      const mockResponse = "Thank you for sharing your thoughts. I understand you're feeling contemplative today. Remember that it's okay to take time for yourself and reflect on what matters most to you."
-      setCurrentResponse(mockResponse)
-      
-      // Save recording to history
-      const newRecording = {
-        id: Date.now(),
-        timestamp: new Date().toLocaleString(),
-        audio: audioBlob,
-        response: mockResponse
-      }
-      setRecordings(prev => [newRecording, ...prev])
-    }, 3000)
-  }
-
-  const handleRecordAnother = () => {
-    setCurrentPage('home')
-  }
-
-  const handleViewHistory = () => {
-    setCurrentPage('history')
-  }
-
-  const handleBackToHome = () => {
-    setCurrentPage('home')
-  }
-
-  const handleShowResponse = () => {
-    setCurrentPage('response')
-  }
-
-  const handlePlayResponse = () => {
-    if (isPlayingResponse) {
-      // Pause playback
-      window.speechSynthesis.cancel()
-      setIsPlayingResponse(false)
-    } else {
-      // Start playback
-      if (currentResponse) {
-        const utterance = new SpeechSynthesisUtterance(currentResponse)
-        utterance.rate = 1.0
-        utterance.pitch = 1.0
-        utterance.volume = 1.0
-        
-        utterance.onstart = () => {
-          setIsPlayingResponse(true)
-        }
-        
-        utterance.onend = () => {
-          setIsPlayingResponse(false)
-        }
-        
-        utterance.onerror = () => {
-          setIsPlayingResponse(false)
-        }
-        
-        window.speechSynthesis.speak(utterance)
-        speechSynthesisRef.current = utterance
-      }
-    }
-  }
+  }, []);
 
   const handleLogin = (userData) => {
-    setIsAuthenticated(true)
-    setCurrentUser(userData)
-    setCurrentPage('home')
-  }
+    try {
+      localStorage.setItem('loggedInUser', JSON.stringify(userData));
+    } catch (e) {
+      localStorage.setItem('loggedInUser', userData?.email || userData || '');
+    }
+    setUser(userData);
+  };
 
   const handleSignup = (userData) => {
-    setIsAuthenticated(true)
-    setCurrentUser(userData)
-    setCurrentPage('home')
-  }
+    try {
+      localStorage.setItem('loggedInUser', JSON.stringify(userData));
+    } catch (e) {
+      localStorage.setItem('loggedInUser', userData?.email || userData || '');
+    }
+    setUser(userData);
+  };
 
   const handleLogout = () => {
-    setIsAuthenticated(false)
-    setCurrentUser(null)
-  }
-
-  const showLogin = () => {
-    setCurrentPage('login')
-  }
-
-  const showSignup = () => {
-    setCurrentPage('signup')
-  }
-
-  const showHome = () => {
-    setCurrentPage('home')
-  }
+    try {
+      localStorage.removeItem('loggedInUser');
+    } catch (e) {}
+    setUser(null);
+  };
 
   return (
-    <div className="app">
-      {!isAuthenticated && currentPage === 'login' && (
-        <LoginForm 
-          onLogin={handleLogin}
-          onSwitchToSignup={showSignup}
-          onBackToHome={showHome}
-        />
-      )}
-      
-      {!isAuthenticated && currentPage === 'signup' && (
-        <SignupForm 
-          onSignup={handleSignup}
-          onSwitchToLogin={showLogin}
-          onBackToHome={showHome}
-        />
-      )}
-      
-      {!isAuthenticated && currentPage === 'home' && (
-        <VoiceRecorder 
-          onRecordingComplete={handleRecordingComplete}
-          onLoginClick={showLogin}
-          onSignupClick={showSignup}
-          onShowResponse={handleShowResponse}
-          onAskMore={handleRecordAnother}
-          currentResponse={currentResponse}
-          isPlayingResponse={isPlayingResponse}
-          onPlayResponse={handlePlayResponse}
-        />
-      )}
-      
-      {isAuthenticated && currentPage === 'home' && (
-        <VoiceRecorder 
-          onRecordingComplete={handleRecordingComplete}
-          onLoginClick={showLogin}
-          onSignupClick={showSignup}
-          onShowResponse={handleShowResponse}
-          onAskMore={handleRecordAnother}
-          currentResponse={currentResponse}
-          isPlayingResponse={isPlayingResponse}
-          onPlayResponse={handlePlayResponse}
-        />
-      )}
-      
-      {isAuthenticated && currentPage === 'response' && (
-        <ResponsePage 
-          response={currentResponse}
-          onRecordAnother={handleRecordAnother}
-          onViewHistory={handleViewHistory}
-          onLoginClick={showLogin}
-          onSignupClick={showSignup}
-        />
-      )}
-      
-      {isAuthenticated && currentPage === 'history' && (
-        <HistoryPage 
-          recordings={recordings}
-          onBackToHome={handleBackToHome}
-          onLoginClick={showLogin}
-          onSignupClick={showSignup}
-        />
-      )}
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<VoiceRecorder user={user} onLogout={handleLogout} />} />
+        <Route path="/log-in" element={<Login onLogin={(u) => { handleLogin(u); }} />} />
+        <Route path="/sign-up" element={<Signup onSignup={(u) => { handleSignup(u); }} />} />
+        <Route path="/account" element={<UserAccount user={user} recordings={recordings} onLogout={handleLogout} />} />
+        <Route path="/records" element={<HistoryPage recordings={recordings} user={user} onLogout={handleLogout} onBackToHome={() => window.location.href='/'} />} />
+        <Route path="/mood-tracker" element={<MoodTracker />} />
+        <Route path="/bible-guidance" element={<BibleGuidance />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
