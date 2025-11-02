@@ -1,7 +1,7 @@
 // components/Layout/Navbar.jsx
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import './Navbar.css'
+import './NavBar.css'
 
 const NAV_ITEMS = [
   { key: 'mentor', label: 'የአማካሪ መመሪያ', icon: '🧑‍🏫', path: '/MentorGuidance' },
