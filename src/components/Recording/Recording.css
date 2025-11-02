@@ -4,11 +4,23 @@
   align-items: center;
   justify-content: space-between;
   height: 100vh;
-  background: linear-gradient(180deg, #d7e3fc 0%, #e3d9fc 100%);
-  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
   color: #2d2d2d;
   padding: 2rem;
   transition: background 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-recorder::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .recorder-header {
@@ -16,6 +28,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 10;
+  position: relative;
 }
 
 .logo {
@@ -38,6 +52,38 @@
 .auth-buttons button:hover {
   background: #4b3cc4;
   color: white;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-image {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.auth-buttons button {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  margin-left: 0.6rem;
+  border-radius: 12px;
+  transition: all 0.3s;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-buttons button:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.auth-buttons button:active {
+  transform: translateY(0);
 }
 
 .recorder-content {
@@ -45,13 +91,19 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  z-index: 10;
+  position: relative;
+  flex: 1;
+  justify-content: center;
 }
 
 .timer-display {
-  font-size: 2rem;
-  font-weight: 500;
-  color: #3c2b84;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
   margin-bottom: 1.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.05em;
 }
 
 .recording-container {
@@ -59,28 +111,47 @@
 }
 
 .record-button {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   border: none;
-  background: #6c63ff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(108, 99, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.5),
+              0 0 0 8px rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.record-button:hover {
-  transform: scale(1.05);
+.record-button:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6),
+              0 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
+.record-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.record-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .record-button.recording {
-  background: #ff5c8d;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
   animation: pulse 1.5s infinite ease-in-out;
+  box-shadow: 0 8px 32px rgba(255, 107, 157, 0.6),
+              0 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+.record-button.recording:hover {
+  box-shadow: 0 12px 40px rgba(255, 107, 157, 0.7),
+              0 0 0 12px rgba(255, 255, 255, 0.15);
 }
 
 @keyframes pulse {
@@ -97,10 +168,10 @@
 
 .recording-ring {
   position: absolute;
-  width: 130px;
-  height: 130px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  border: 4px solid rgba(255, 92, 141, 0.4);
+  border: 3px solid rgba(255, 107, 157, 0.5);
   animation: ringPulse 2s infinite ease-in-out;
 }
 
@@ -117,283 +188,121 @@
 
 .instructions {
   margin-top: 2rem;
-  font-size: 1rem;
-  color: #555;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+}
+
+.instructions p {
+  margin: 0;
+  line-height: 1.6;
 }
 
 .warning-message {
-  background: #fff7d6;
+  background: rgba(255, 247, 214, 0.95);
+  backdrop-filter: blur(10px);
   color: #b98000;
-  padding: 0.8rem 1rem;
-  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
   margin-top: 1rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(185, 128, 0, 0.2);
+  border: 1px solid rgba(255, 200, 87, 0.3);
 }
 
 .response-section {
-  background: #ffffffc9;
-  border-radius: 20px;
-  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 2rem;
   width: 90%;
-  max-width: 500px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 550px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15),
+              0 0 0 1px rgba(255, 255, 255, 0.5);
   margin-top: 2rem;
+  animation: slideUp 0.5s ease-out;
 }
 
-.response-display h3 {
-  font-size: 1.2rem;
-  color: #3c2b84;
-  margin-bottom: 0.5rem;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.6;
-}
-
-/* Apply Amharic styling to h3 when it contains backend text */
-.response-display h3.amharic-text,
-.response-display h3:not(:empty) {
-  font-family: 'Noto Sans Ethiopic', 'Abyssinica SIL', 'Nyala', 'GF Zemen Unicode', 'Nyala', 'Code2000', sans-serif;
-}
-
-.option-button {
-  background: #4b3cc4;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 12px;
-  margin: 0.4rem;
-  transition: background 0.3s;
-  cursor: pointer;
-}
-
-.option-button:hover {
-  background: #3227a8;
-}
-
-.greeting {
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #4b3cc4; /* accent color */
-  animation: pulseText 2s infinite ease-in-out;
-}
-
-/* gentle interactive pulse for the text */
-@keyframes pulseText {
-  0% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.9; }
-}
-
-/* Processing state */
-.processing-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #e3d9fc;
-  border-top: 4px solid #4b3cc4;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Response content */
-.response-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.text-response {
-  background: #f8f9ff;
-  padding: 1.2rem;
-  border-radius: 12px;
-  border-left: 4px solid #4b3cc4;
-}
-
-.response-label {
-  font-weight: 600;
-  color: #3c2b84;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Scrollable response text container */
-.response-text-container {
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #e8e8ff;
-  border-radius: 8px;
-  padding: 12px;
-  background-color: #fefeff;
-  margin-top: 8px;
-}
-
-.response-text-content {
-  color: #2d2d2d;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-/* Scrollbar styling for webkit browsers (Chrome, Safari, Edge) */
-.response-text-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.response-text-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.response-text-container::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.response-text-container::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Scrollbar styling for Firefox */
-.response-text-container {
-  scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 #f1f1f1;
-}
-
-/* Amharic text support */
-.amharic-text {
-  font-family: 'Noto Sans Ethiopic', 'Abyssinica SIL', 'Nyala', 'GF Zemen Unicode', 'Nyala', 'Code2000', sans-serif;
-  font-size: 1.1rem;
-  direction: ltr;
-  text-align: left;
-  line-height: 1.8;
-  letter-spacing: 0.02em;
-  font-feature-settings: "liga" on, "calt" on;
-}
-
-/* Fallback for browsers without Amharic fonts */
-@supports not (font-family: 'Noto Sans Ethiopic') {
-  .amharic-text {
-    font-family: system-ui, -apple-system, sans-serif;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Audio response controls */
-.audio-response-controls {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
+.response-display {
+  margin-bottom: 1.5rem;
 }
 
-.play-audio-button {
-  background: #6c63ff;
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
+.response-display h3 {
+  font-size: 1.4rem;
+  color: #667eea;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.response-text {
   font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+  line-height: 1.8;
+  color: #333;
 }
 
-.play-audio-button:hover:not(:disabled) {
-  background: #5a52e0;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.4);
+.response-text p {
+  margin-bottom: 0.5rem;
 }
 
-.play-audio-button:active:not(:disabled) {
-  transform: translateY(0);
+.response-note {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5rem;
 }
 
-.play-audio-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.play-audio-button span {
-  font-size: 1.2rem;
-}
-
-/* Error state */
 .error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.error-state p {
-  color: #d32f2f;
   text-align: center;
-  margin: 0;
 }
 
 .retry-button {
-  background: #ff5c8d;
+  background: #ff6b9d;
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
+  margin-top: 1rem;
 }
 
 .retry-button:hover {
-  background: #ff4076;
+  background: #ff5a8a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
 }
 
-.error-message {
-  background: #ffe0e0;
-  color: #d32f2f;
-  padding: 1rem;
-  border-radius: 12px;
-  margin: 1rem 0;
-  text-align: center;
-  border-left: 4px solid #d32f2f;
-  max-width: 500px;
-}
-
-/* Audio response ready fallback */
 .audio-response-ready {
   text-align: center;
-  padding: 1rem;
-  color: #555;
 }
 
-/* Post recording info */
 .post-recording-info {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 1.5rem;
   margin-top: 1.5rem;
-  text-align: center;
 }
 
 .instructions-small {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
 .recording-options-container {
@@ -401,68 +310,141 @@
   justify-content: center;
 }
 
-.recording-options {
+/* Response content */
+.response-content {
   display: flex;
-  gap: 0.8rem;
   flex-wrap: wrap;
+  gap: 0.75rem;
   justify-content: center;
 }
 
-/* Mobile responsiveness */
+.option-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  min-width: 140px;
+}
+
+.option-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.option-button:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.option-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.option-button.read-response {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.option-button.ask-more {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+}
+
+.option-button.ask-more:hover:not(:disabled) {
+  box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+}
+
+.greeting {
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  animation: pulseText 2s infinite ease-in-out;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 0 1rem;
+}
+
+/* gentle interactive pulse for the text */
+@keyframes pulseText {
+  0% { transform: scale(1); opacity: 0.95; }
+  50% { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.95; }
+}
+
+/* Error message styling */
+.error-message {
+  background: rgba(234, 67, 53, 0.95);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(234, 67, 53, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  .response-section {
-    width: 95%;
+  .voice-recorder {
     padding: 1rem;
   }
-
-  .response-text-content {
-    font-size: 0.9rem;
-  }
-
-  .response-text-container {
-    max-height: 150px;
-    padding: 10px;
-  }
-
-  .play-audio-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 0.9rem;
-  }
-
-  .recording-container {
-    margin: 1rem 0;
-  }
-
+  
   .record-button {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
   }
-
+  
+  .recording-ring {
+    width: 130px;
+    height: 130px;
+  }
+  
+  .timer-display {
+    font-size: 2.5rem;
+  }
+  
+  .greeting {
+    font-size: 1.5rem;
+  }
+  
+  .response-section {
+    padding: 1.5rem;
+    width: 95%;
+  }
+  
+  .option-button {
+    width: 100%;https://github.com/CruSea/spirit_voice_web/pull/5/conflict?name=src%252Fcomponents%252FRecording%252FRecording.css&ancestor_oid=24da5b4871c6df39eb00f1cea0cc57930158ecca&base_oid=6931e058d0398def91541d08c8c705a5139a0695&head_oid=2c71f157a521c17972ae3c5fa5a5cdf0b1195c01
+    min-width: auto;
+  }
+  
   .recording-options {
     flex-direction: column;
-    align-items: center;
-  }
-
-  .option-button {
-    width: 200px;
   }
 }
 
 @media (max-width: 480px) {
-  .response-text-container {
-    max-height: 120px;
-    padding: 8px;
+  .auth-buttons button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
   }
-
-  .voice-recorder {
-    padding: 1rem;
-  }
-
-  .greeting {
-    font-size: 1.3rem;
-  }
-
-  .timer-display {
-    font-size: 1.7rem;
+  
+  .logo-image {
+    width: 40px !important;
   }
 }

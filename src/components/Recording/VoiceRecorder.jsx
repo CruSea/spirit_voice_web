@@ -3,116 +3,8 @@ import { voiceApi } from '../../services/voice.js'
 import './Recording.css'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/NavBar'
-import logo from '../../assets/wedaj.png';
+import logo from '../../assets/wedaj.png'; 
 
-// ResponseDisplay Component
-const ResponseDisplay = ({
-  isProcessing,
-  error,
-  responseText,
-  audioUrl,
-  audioRef,
-  isPlayingResponse,
-  onPlayResponse,
-  onAskMore
-}) => {
-  if (isProcessing) {
-    return (
-      <div className="processing-state">
-        <p>Processing your voice... please wait 🌸</p>
-        <div className="loading-spinner"></div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="error-state">
-        <p>⚠️ {error}</p>
-        <button className="retry-button" onClick={onAskMore}>
-          Try Again
-        </button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="response-content">
-      {responseText && responseText.trim().length > 0 && (
-        <div className="text-response">
-          <p className="response-label">Response:</p>
-          <div className="response-text-container">
-            <p className="response-text-content amharic-text">{responseText}</p>
-          </div>
-        </div>
-      )}
-      
-      {audioUrl && audioRef.current ? (
-        <div className="audio-response-controls">
-          <button 
-            className="play-audio-button" 
-            onClick={onPlayResponse}
-            disabled={!audioRef.current}
-            aria-label={isPlayingResponse ? "Pause audio" : "Play audio"}
-          >
-            {isPlayingResponse ? (
-              <>
-                <span>⏸️</span> Pause
-              </>
-            ) : (
-              <>
-                <span>▶️</span> Play Audio
-              </>
-            )}
-          </button>
-        </div>
-      ) : null}
-      
-      {!responseText && !audioUrl && (
-        <div className="audio-response-ready">
-          <p>Your response is ready! 🌿</p>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ResponseOptions Component
-const ResponseOptions = ({
-  audioUrl,
-  audioRef,
-  isPlayingResponse,
-  onPlayResponse,
-  onAskMore
-}) => {
-  return (
-    <div className="post-recording-info">
-      <p className="instructions-small">What would you like to do next?</p>
-      <div className="recording-options-container">
-        <div className="recording-options">
-          {audioUrl && audioRef.current ? (
-            <button 
-              className="option-button read-response" 
-              onClick={onPlayResponse}
-              disabled={!audioRef.current}
-            >
-              {isPlayingResponse ? (
-                "⏸️ Pause"
-              ) : (
-                "▶️ Play Audio"
-              )}
-            </button>
-          ) : null}
-          <button className="option-button ask-more" onClick={onAskMore}>
-            Ask More 🌼
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Main VoiceRecorder Component
 const VoiceRecorder = ({
   onRecordingComplete,
   onLoginClick,
@@ -127,9 +19,6 @@ const VoiceRecorder = ({
   const [isPlayingResponse, setIsPlayingResponse] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState('')
-  const [responseText, setResponseText] = useState('')
-  const [audioUrl, setAudioUrl] = useState('')
-  const [hasPermission, setHasPermission] = useState(null) // null = not checked, true = granted, false = denied
   const mediaRecorderRef = useRef(null)
   const streamRef = useRef(null)
   const audioChunksRef = useRef([])
@@ -215,35 +104,8 @@ const VoiceRecorder = ({
   const startRecording = async () => {
     try {
       setError('') // Clear previous errors
-      setResponseText('') // Clear previous response
-      setAudioUrl('') // Clear previous audio
-      
-      // Request microphone permission
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        } 
-      })
-      
-      streamRef.current = stream
-      setHasPermission(true)
-      
-      // Determine the best MIME type supported
-      let mimeType = 'audio/webm'
-      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-        mimeType = 'audio/webm;codecs=opus'
-      } else if (MediaRecorder.isTypeSupported('audio/webm')) {
-        mimeType = 'audio/webm'
-      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
-        mimeType = 'audio/mp4'
-      } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
-        mimeType = 'audio/ogg'
-      }
-      
-      const options = { mimeType }
-      mediaRecorderRef.current = new MediaRecorder(stream, options)
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      mediaRecorderRef.current = new MediaRecorder(stream)
       audioChunksRef.current = []
 
       mediaRecorderRef.current.ondataavailable = (event) => {
@@ -253,7 +115,7 @@ const VoiceRecorder = ({
       }
 
       mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' })
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' })
         handleRecordingComplete(audioBlob)
         setShowOptions(true)
         
@@ -282,18 +144,7 @@ const VoiceRecorder = ({
       }, 1000)
     } catch (error) {
       console.error('Error accessing microphone:', error)
-      setHasPermission(false)
-      
-      // Provide user-friendly error messages
-      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
-        setError('Microphone permission denied. Please allow microphone access in your browser settings.')
-      } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
-        setError('No microphone found. Please connect a microphone and try again.')
-      } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
-        setError('Microphone is already in use by another application.')
-      } else {
-        setError('Could not access microphone. Please check your device permissions and try again.')
-      }
+      setError('ድምጽ ስርዓቱን መጠቀም አልቻለም። እባክዎ ፍቃዶችን ይፈትሹ።')
     }
   }
 
@@ -308,6 +159,76 @@ const VoiceRecorder = ({
       }
       setIsRecording(false)
       clearInterval(timerRef.current)
+      
+      // Stop all tracks
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop())
+    }
+  }
+
+  const handleRecordingComplete = async (audioBlob) => {
+    setIsProcessing(true)
+    setError('')
+    
+    try {
+      console.log('Audio blob details:', {
+        size: audioBlob.size,
+        type: audioBlob.type
+      });
+
+      // Convert Blob to ArrayBuffer for the voiceApi service
+      const arrayBuffer = await audioBlob.arrayBuffer()
+      
+      console.log('ArrayBuffer size:', arrayBuffer.byteLength);
+      
+      // Use the actual voiceApi service to upload the audio and get the AI response URL
+      const audioUrl = await voiceApi.uploadVoice(arrayBuffer, `recording-${Date.now()}.wav`)
+      
+      console.log('Received audio URL:', audioUrl);
+      
+      // Create audio element for playing the AI response
+      const audio = new Audio(audioUrl)
+      audioRef.current = audio
+      
+      // Set up audio event listeners
+      audio.onplay = () => setIsPlayingResponse(true)
+      audio.onended = () => setIsPlayingResponse(false)
+      audio.onpause = () => setIsPlayingResponse(false)
+      audio.onerror = (e) => {
+        console.error('Audio playback error:', e)
+        setIsPlayingResponse(false)
+        setError('Error playing AI response audio')
+      }
+      
+      // Test if the audio can play
+      await audio.play().catch(e => {
+        console.error('Initial audio play failed:', e)
+        setError('የአርቲፊሻል ኢንተሊጀንስ ምላሽ ደርሷል ግን ድምጽ መጫወት አልቻለም')
+      });
+      
+    } catch (error) {
+      console.error('Error in handleRecordingComplete:', error)
+      setError(`መዝገብን ማስተናገድ አልቻለም: ${error.message}`)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  const handlePlayResponse = async () => {
+    if (isPlayingResponse) {
+      // Pause playback
+      audioRef.current?.pause()
+      setIsPlayingResponse(false)
+    } else {
+      // Start playback
+      try {
+        if (audioRef.current) {
+          await audioRef.current.play()
+        }
+      } catch (error) {
+        console.error('Error playing audio:', error)
+        setError('የአርቲፊሻል ኢንተሊጀንስ ምላሽ መጫወት አልቻለም')
+        setIsPlayingResponse(false)
+      }
     }
   }
 
@@ -438,16 +359,11 @@ const VoiceRecorder = ({
     // Clean up audio
     if (audioRef.current) {
       audioRef.current.pause()
-      audioRef.current.src = ''
       audioRef.current = null
     }
-    
     setIsPlayingResponse(false)
     setShowOptions(false)
-    setResponseText('')
-    setAudioUrl('')
     setError('')
-    setShowGreeting(true)
   }
 
   return (
@@ -457,9 +373,10 @@ const VoiceRecorder = ({
         <div className="logo">
        <img src={logo} alt="Wedaj logo" className="logo-image" width="50px" />
        </div>
+
         <div className="auth-buttons">
-          <button className="login-button" onClick={() =>navigate('log-in')}>Login</button>
-          <button className="signup-button" onClick={()=> navigate('sign-up')}>Sign Up</button>
+          <button className="login-button" onClick={() =>navigate('log-in')}>ግባ</button>
+          <button className="signup-button" onClick={()=> navigate('sign-up')}>ይመዝገቡ</button>
         </div>
       </header>
 
@@ -468,14 +385,14 @@ const VoiceRecorder = ({
         {/* GREETING - only at the beginning */}
         {showGreeting && (
           <div className="greeting">
-            ሰላም ዛሬ እንዴት ነህ? 🌿
+             ሰላም ዛሬ እንዴት ነህ?
           </div>
         )}
 
         {/* ERROR DISPLAY */}
         {error && (
           <div className="error-message">
-            ⚠️ {error}
+              ⚠️ ስህተት ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።
           </div>
         )}
 
@@ -484,28 +401,44 @@ const VoiceRecorder = ({
         ) : (
           <div className="response-section">
             <div className="response-display">
+              <h3>የወዳጅ ምላሽ💬</h3>
               <div className="response-text">
-                <ResponseDisplay
-                  isProcessing={isProcessing}
-                  error={error}
-                  responseText={responseText}
-                  audioUrl={audioUrl}
-                  audioRef={audioRef}
-                  isPlayingResponse={isPlayingResponse}
-                  onPlayResponse={handlePlayResponse}
-                  onAskMore={handleAskMore}
-                />
+                {isProcessing ? (
+                  "ድምጽህን እያሰለስኩ ነው... እባክህ ጠብቅ 🌸"
+                ) : error ? (
+                  <div className="error-state">
+                    <p>የመዝገብን በማስተናገድ ላይ ችግር ተፈጥሯል።</p>
+                    <button className="retry-button" onClick={handleAskMore}>
+                      እንደገና ሞክር
+                    </button>
+                  </div>
+                ) : (
+                  <div className="audio-response-ready">
+                    <p>የአርቲፊሻል ኢንተሊጀንስ ምላሽዎ ዝግጁ ነው! ለመስማት "ምላሽን አጫውት" ይጫኑ። 🎵</p>
+                    <p className="response-note">ድምጽህን አዳምጨውዋለው እና አንተን ለመደገፍ እዚህ ነኝ። </p>
+                  </div>
+                )}
               </div>
             </div>
             
-            {!error && !isProcessing && (
-              <ResponseOptions
-                audioUrl={audioUrl}
-                audioRef={audioRef}
-                isPlayingResponse={isPlayingResponse}
-                onPlayResponse={handlePlayResponse}
-                onAskMore={handleAskMore}
-              />
+            {!error && (
+              <div className="post-recording-info">
+                <p className="instructions-small">የተመላሽ ነጻጆት ዝግጁ ነው። ቀጣይ ምን ማድረግ ይፈልጋሉ?</p>
+                <div className="recording-options-container">
+                  <div className="recording-options">
+                    <button 
+                      className="option-button read-response" 
+                      onClick={handleReadResponse}
+                      disabled={isProcessing || !audioRef.current || error}
+                    >
+                      {isPlayingResponse ? "ምላሽን አቁም" : "ምላሽን አጫውት"}
+                    </button>
+                    <button className="option-button ask-more" onClick={handleAskMore}>
+                      {error ? "እንደገና ሞክር" : "ተጨማሪ ጥያቄ🌼"}
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -536,7 +469,7 @@ const VoiceRecorder = ({
         {/* WARNINGS + INSTRUCTIONS */}
         {showWarning && (
           <div className="warning-message">
-            ⏳ Recording will stop in {120 - recordingTime} seconds
+            ⏳ መዝገብ በ {120 - recordingTime} ሰከንዶች ውስጥ ይቆማል
           </div>
         )}
 

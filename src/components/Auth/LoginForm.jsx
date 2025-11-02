@@ -12,7 +12,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup, onBackToHome }) => {
     e.preventDefault();
     // Simple validation
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError("እባክህ ሁሉንም መስኮች ሙላ");
       return;
     }
 
@@ -35,7 +35,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup, onBackToHome }) => {
     <div className="auth-modal">
       <div className="auth-content">
         <div className="auth-header">
-          <h2>Login</h2>
+          <h2>ግባ</h2>
           <button className="close-button" onClick={handleClose}>
             ×
           </button>
@@ -43,37 +43,37 @@ const LoginForm = ({ onLogin, onSwitchToSignup, onBackToHome }) => {
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={login}>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">ኢሜል</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder= "ኢሜሎትን አስገቡ"
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">የይለፍ ቃል</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="የይለፍ ቃልዎን አስገቡ"
             />
           </div>
           <button
             type="submit"
             className="auth-button"
           >
-            Login
+            ግባ
           </button>
         </form>
         <div className="auth-switch">
           <p>
-            Don't have an account?
+           አልተመዘገቡም?
             <button onClick={onSwitchToSignup} className="switch-button">
-              Sign Up
+              ይመዝገቡ
             </button>
           </p>
         </div>
