@@ -10,6 +10,7 @@ import MoodTracker from './components/MoodTracker/MoodTracker';
 import BibleGuidance from './components/BibleGuidance/BibleGuidance';
 import VoiceHistory from './components/VoiceHistory/VoiceHistory';
 import Settings from './components/Settings/Settings';
+import logo from './assets/wedaj.png'; 
 
 function App() {
   const [user, setUser] = useState(null);

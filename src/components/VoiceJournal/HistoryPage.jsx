@@ -19,12 +19,10 @@ const HistoryPage = ({ onLoginClick, onSignupClick, user, onLogout }) => {
     closeMenu()
     switch (action) {
       case 'home':
-        // Navigate to records page
-        navigate('/records')
+        navigate('/')
         break
       case 'record':
-        // Navigate to voice history
-        navigate('/voice-history')
+        navigate('/')
         break
       case 'mood':
         // Navigate to mood tracker
@@ -40,7 +38,7 @@ const HistoryPage = ({ onLoginClick, onSignupClick, user, onLogout }) => {
         break
       case 'settings':
         // Navigate to settings
-        navigate('/settings')
+        alert('Navigating to Settings')
         break
       case 'logout':
         if (onLogout) onLogout()
