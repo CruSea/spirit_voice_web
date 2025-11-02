@@ -3,6 +3,7 @@ import { voiceApi } from '../../services/voice.js'
 import './Recording.css'
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/NavBar'
+import logo from '../../assets/wedaj.png';
 
 // ResponseDisplay Component
 const ResponseDisplay = ({
@@ -453,7 +454,9 @@ const VoiceRecorder = ({
     <div className="voice-recorder">
       {/* HEADER */}
       <header className="recorder-header">
-        <div className="logo">ወዳጅ</div>
+        <div className="logo">
+       <img src={logo} alt="Wedaj logo" className="logo-image" width="50px" />
+       </div>
         <div className="auth-buttons">
           <button className="login-button" onClick={() =>navigate('log-in')}>Login</button>
           <button className="signup-button" onClick={()=> navigate('sign-up')}>Sign Up</button>
