@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import './Navbar.css'
 
 const NAV_ITEMS = [
-  { key: 'mentor', label: 'Mentor Guidance', icon: '🧑‍🏫', path: '/MentorGuidance' },
-  { key: 'bible', label: 'Bible Guidance', icon: '📖', path: '/BibleGuidance' },
-  { key: 'mood', label: 'Mood Tracker', icon: '🧭', path: '/Moodtracker' },
-  { key: 'journal', label: 'Voice Journal', icon: '🎙️', path: '/VoiceJournal' },
-  { key: 'prayer', label: 'Prayer Request', icon: '🙏', path: '/PrayerRequest' },
-  { key: 'settings', label: 'User Settings', icon: '⚙️', path: '/Settings' },
+  { key: 'mentor', label: 'የአማካሪ መመሪያ', icon: '🧑‍🏫', path: '/MentorGuidance' },
+  { key: 'bible', label: 'የቅዱስ መጽሐፍ መምሪያ', icon: '📖', path: '/BibleGuidance' },
+  { key: 'mood', label: 'የስሜት መዳረጊያ', icon: '🧭', path: '/Moodtracker' },
+  { key: 'journal', label: 'የድምጽ መዝገብ', icon: '🎙️', path: '/VoiceJournal' },
+  { key: 'prayer', label: 'የጸሎት ጥያቄ', icon: '🙏', path: '/PrayerRequest' },
+  { key: 'settings', label: 'የተጠቃሚ ቅንብሮች', icon: '⚙️', path: '/Settings' },
 ]
 
 const Navbar = ({ onLogout }) => {
@@ -28,7 +28,7 @@ const Navbar = ({ onLogout }) => {
     <nav className={`navbar vertical ${expanded ? 'expanded' : 'collapsed'}`} aria-hidden={false}>
       <button
         className="nav-toggle"
-        aria-label={expanded ? 'Collapse navigation' : 'Expand navigation'}
+        aria-label={expanded ? 'አሰሳ አጥብቅ' : 'አሰሳ አሰፋ'}
         onClick={() => setExpanded((s) => !s)}
       >
         {expanded ? '‹' : '›'}
@@ -44,7 +44,7 @@ const Navbar = ({ onLogout }) => {
       </ul>
 
       <div className="navbar-bottom">
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        <button className="logout-btn" onClick={handleLogout}>ውጣ</button>
       </div>
     </nav>
   )

@@ -12,7 +12,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup, onBackToHome }) => {
     e.preventDefault();
     // Simple validation
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError("እባክህ ሁሉንም መስኮች ሙላ");
       return;
     }
 

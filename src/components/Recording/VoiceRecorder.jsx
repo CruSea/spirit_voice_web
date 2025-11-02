@@ -61,7 +61,7 @@ const VoiceRecorder = ({
       }, 1000)
     } catch (error) {
       console.error('Error accessing microphone:', error)
-      setError('Could not access microphone. Please check permissions.')
+      setError('ድምጽ ስርዓቱን መጠቀም አልቻለም። እባክዎ ፍቃዶችን ይፈትሹ።')
     }
   }
 
@@ -113,12 +113,12 @@ const VoiceRecorder = ({
       // Test if the audio can play
       await audio.play().catch(e => {
         console.error('Initial audio play failed:', e)
-        setError('AI response received but cannot play audio')
+        setError('የአርቲፊሻል ኢንተሊጀንስ ምላሽ ደርሷል ግን ድምጽ መጫወት አልቻለም')
       });
       
     } catch (error) {
       console.error('Error in handleRecordingComplete:', error)
-      setError(`Failed to process recording: ${error.message}`)
+      setError(`መዝገብን ማስተናገድ አልቻለም: ${error.message}`)
     } finally {
       setIsProcessing(false)
     }
@@ -137,7 +137,7 @@ const VoiceRecorder = ({
         }
       } catch (error) {
         console.error('Error playing audio:', error)
-        setError('Error playing AI response')
+        setError('የአርቲፊሻል ኢንተሊጀንስ ምላሽ መጫወት አልቻለም')
         setIsPlayingResponse(false)
       }
     }
@@ -190,7 +190,7 @@ const VoiceRecorder = ({
         {/* ERROR DISPLAY */}
         {error && (
           <div className="error-message">
-            ⚠️ {error}
+              ⚠️ ስህተት ተፈጥሯል። እባክዎ እንደገና ይሞክሩ።
           </div>
         )}
 
@@ -202,17 +202,17 @@ const VoiceRecorder = ({
               <h3>የወዳጅ ምላሽ💬</h3>
               <div className="response-text">
                 {isProcessing ? (
-                  "Processing your voice... please wait 🌸"
+                  "ድምጽህን እያሰለስኩ ነው... እባክህ ጠብቅ 🌸"
                 ) : error ? (
                   <div className="error-state">
-                    <p>There was an issue processing your recording.</p>
+                    <p>የመዝገብን በማስተናገድ ላይ ችግር ተፈጥሯል።</p>
                     <button className="retry-button" onClick={handleAskMore}>
-                      Try Again
+                      እንደገና ሞክር
                     </button>
                   </div>
                 ) : (
                   <div className="audio-response-ready">
-                    <p>Your AI response is ready! Click "Play Response" to listen. 🎵</p>
+                    <p>የአርቲፊሻል ኢንተሊጀንስ ምላሽዎ ዝግጁ ነው! ለመስማት "ምላሽን አጫውት" ይጫኑ። 🎵</p>
                     <p className="response-note">ድምጽህን አዳምጨውዋለው እና አንተን ለመደገፍ እዚህ ነኝ። </p>
                   </div>
                 )}
@@ -221,7 +221,7 @@ const VoiceRecorder = ({
             
             {!error && (
               <div className="post-recording-info">
-                <p className="instructions-small">Your reflection is ready. What would you like to do next?</p>
+                <p className="instructions-small">የተመላሽ ነጻጆት ዝግጁ ነው። ቀጣይ ምን ማድረግ ይፈልጋሉ?</p>
                 <div className="recording-options-container">
                   <div className="recording-options">
                     <button 
@@ -229,7 +229,7 @@ const VoiceRecorder = ({
                       onClick={handleReadResponse}
                       disabled={isProcessing || !audioRef.current || error}
                     >
-                      {isPlayingResponse ? "Pause Response" : "Play Response"}
+                      {isPlayingResponse ? "ምላሽን አቁም" : "ምላሽን አጫውት"}
                     </button>
                     <button className="option-button ask-more" onClick={handleAskMore}>
                       {error ? "እንደገና ሞክር" : "ተጨማሪ ጥያቄ🌼"}
@@ -267,7 +267,7 @@ const VoiceRecorder = ({
         {/* WARNINGS + INSTRUCTIONS */}
         {showWarning && (
           <div className="warning-message">
-            ⏳ Recording will stop in {120 - recordingTime} seconds
+            ⏳ መዝገብ በ {120 - recordingTime} ሰከንዶች ውስጥ ይቆማል
           </div>
         )}
 

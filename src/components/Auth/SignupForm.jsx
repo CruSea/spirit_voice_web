@@ -14,12 +14,12 @@ const SignupForm = ({ onSignup, onSwitchToLogin, onBackToHome }) => {
     e.preventDefault()
     // Simple validation
     if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields')
+      setError('እባክህ ሁሉንም መስኮች ሙላ')
       return
     }
     
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('የይለፍ ቃላት አይዛመዱም')
       return
     }
 
