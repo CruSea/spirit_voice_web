@@ -1,0 +1,405 @@
+.bible-guidance {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #d7e3fc 0%, #e3d9fc 100%);
+  font-family: 'Poppins', sans-serif;
+  color: #2d2d2d;
+  padding: 1rem;
+}
+
+.bible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  margin-bottom: 1rem;
+}
+
+.bible-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #4b3cc4;
+  text-align: center;
+  flex: 1;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #4b3cc4;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover {
+  background: rgba(75, 60, 196, 0.1);
+}
+
+.header-spacer {
+  width: 40px;
+}
+
+.bible-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.bible-description {
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.verse-highlight {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.verse-highlight h2 {
+  color: #4b3cc4;
+  margin-bottom: 1rem;
+}
+
+.verse-text {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.verse-reference {
+  font-weight: 600;
+  color: #6c63ff;
+  margin: 0;
+}
+
+.emotions-section {
+  margin-bottom: 2rem;
+}
+
+.emotions-section h2 {
+  color: #4b3cc4;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.emotions-section > p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.emotions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.emotion-button {
+  background: white;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.emotion-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.emotion-emoji {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.emotion-name {
+  font-weight: 500;
+  color: #4b3cc4;
+}
+
+.verses-section {
+  margin-bottom: 2rem;
+}
+
+.verses-section h2 {
+  color: #4b3cc4;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.verses-section > p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.verses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.verse-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.verse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.verse-type {
+  font-weight: 600;
+  color: #4b3cc4;
+}
+
+.favorite-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.verse-emoji {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.verse-card .verse-text {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.verse-card .verse-reference {
+  font-weight: 600;
+  color: #6c63ff;
+  margin-bottom: 1rem;
+}
+
+.verse-description {
+  color: #777;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.verse-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.action-button {
+  background: #4b3cc4;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.action-button:hover {
+  background: #3227a8;
+}
+
+.library-section {
+  margin-bottom: 2rem;
+}
+
+.library-section h2 {
+  color: #4b3cc4;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.library-section > p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.library-verse {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.verse-category {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6c63ff;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.library-verse .verse-emoji {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.library-verse .verse-text {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.library-verse .verse-reference {
+  font-weight: 600;
+  color: #6c63ff;
+  margin-bottom: 1rem;
+}
+
+.library-verse .verse-description {
+  color: #777;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.load-more-button {
+  background: #4b3cc4;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: block;
+  margin: 2rem auto;
+  transition: background 0.3s ease;
+}
+
+.load-more-button:hover {
+  background: #3227a8;
+}
+
+.prayer-section {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.prayer-section h2 {
+  color: #4b3cc4;
+  margin-bottom: 1rem;
+}
+
+.prayer-section > p {
+  color: #555;
+}
+
+.favorites-section {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.favorites-section h2 {
+  color: #4b3cc4;
+  margin-bottom: 1rem;
+}
+
+.favorites-section > p {
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.no-favorites {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.favorites-emoji {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.no-favorites p:first-of-type {
+  font-weight: 600;
+  color: #4b3cc4;
+  margin-bottom: 0.5rem;
+}
+
+.no-favorites p:last-of-type {
+  color: #777;
+  margin: 0;
+}
+
+.footer-section {
+  text-align: center;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(75, 60, 196, 0.1);
+  margin-top: 1rem;
+}
+
+.faith-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.faith-message {
+  color: #4b3cc4;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.copyright {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .emotions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .library-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bible-header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .verse-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './Auth.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const SignupForm = ({ onSignup, onSwitchToLogin, onBackToHome }) => {
   const [name, setName] = useState('')
@@ -8,6 +8,7 @@ const SignupForm = ({ onSignup, onSwitchToLogin, onBackToHome }) => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -28,9 +29,10 @@ const SignupForm = ({ onSignup, onSwitchToLogin, onBackToHome }) => {
     // In a real app, this would call an API
     // For now, we'll just simulate a successful signup
     onSignup({ name, email })
+    
+    // Redirect to the records page after successful signup
+    navigate('/records');
   }
-
-  const navigate = useNavigate()
 
   const handleClose = () => {
     if (typeof onBackToHome === 'function') return onBackToHome()
@@ -86,12 +88,10 @@ const SignupForm = ({ onSignup, onSwitchToLogin, onBackToHome }) => {
               placeholder="Confirm your password"
             />
           </div>
-          <Link to="/">
           <button type="submit" className="auth-button">Sign Up</button>
-          </Link>
         </form>
         <div className="auth-switch">
-          <p>Already have an account? <Link to='/login'><button onClick={onSwitchToLogin} className="switch-button">Login</button></Link></p>
+          <p>Already have an account? <button onClick={onSwitchToLogin} className="switch-button">Login</button></p>
         </div>
       </div>
     </div>

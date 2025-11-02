@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { voiceApi } from '../../services/voice.js'
 import './Recording.css'
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar/NavBar'
 
 const VoiceRecorder = ({
   onRecordingComplete,
@@ -17,7 +18,11 @@ const VoiceRecorder = ({
   const [isPlayingResponse, setIsPlayingResponse] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState('')
+  const [responseText, setResponseText] = useState('')
+  const [audioUrl, setAudioUrl] = useState('')
+  const [hasPermission, setHasPermission] = useState(null) // null = not checked, true = granted, false = denied
   const mediaRecorderRef = useRef(null)
+  const streamRef = useRef(null)
   const audioChunksRef = useRef([])
   const timerRef = useRef(null)
   const audioRef = useRef(null)
@@ -30,21 +35,130 @@ const VoiceRecorder = ({
     }
   }, [recordingTime, isRecording])
 
+  // Check microphone permission on mount
+  useEffect(() => {
+    const checkPermission = async () => {
+      try {
+        // Check if getUserMedia is available
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setHasPermission(false)
+          setError('Microphone access is not supported on this device/browser')
+          return
+        }
+
+        // Try to check permission status if supported
+        if (navigator.permissions && navigator.permissions.query) {
+          try {
+            const result = await navigator.permissions.query({ name: 'microphone' })
+            setHasPermission(result.state === 'granted')
+            result.onchange = () => {
+              setHasPermission(result.state === 'granted')
+            }
+          } catch (e) {
+            // Permission query not supported, will check on first use
+            setHasPermission(null)
+          }
+        } else {
+          // Fallback: permission will be checked when user tries to record
+          setHasPermission(null)
+        }
+      } catch (error) {
+        console.error('Error checking microphone permission:', error)
+        setHasPermission(null)
+      }
+    }
+    checkPermission()
+  }, [])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Clean up timer
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
+      
+      // Stop recording if active
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        try {
+          mediaRecorderRef.current.stop()
+        } catch (e) {
+          console.error('Error stopping recorder:', e)
+        }
+      }
+      
+      // Stop all media tracks
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop())
+        streamRef.current = null
+      }
+      
+      // Clean up audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.src = ''
+        audioRef.current = null
+      }
+      
+    }
+  }, [])
+
   const startRecording = async () => {
     try {
       setError('') // Clear previous errors
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaRecorderRef.current = new MediaRecorder(stream)
+      setResponseText('') // Clear previous response
+      setAudioUrl('') // Clear previous audio
+      
+      // Request microphone permission
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        } 
+      })
+      
+      streamRef.current = stream
+      setHasPermission(true)
+      
+      // Determine the best MIME type supported
+      let mimeType = 'audio/webm'
+      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        mimeType = 'audio/webm;codecs=opus'
+      } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+        mimeType = 'audio/webm'
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        mimeType = 'audio/mp4'
+      } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+        mimeType = 'audio/ogg'
+      }
+      
+      const options = { mimeType }
+      mediaRecorderRef.current = new MediaRecorder(stream, options)
       audioChunksRef.current = []
 
       mediaRecorderRef.current.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data)
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data)
+        }
       }
 
       mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' })
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' })
         handleRecordingComplete(audioBlob)
         setShowOptions(true)
+        
+        // Stop all tracks to release microphone
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(track => track.stop())
+          streamRef.current = null
+        }
+      }
+
+      mediaRecorderRef.current.onerror = (event) => {
+        console.error('MediaRecorder error:', event.error)
+        setError('Error during recording. Please try again.')
+        stopRecording()
       }
 
       mediaRecorderRef.current.start()
@@ -59,26 +173,47 @@ const VoiceRecorder = ({
       }, 1000)
     } catch (error) {
       console.error('Error accessing microphone:', error)
-      setError('Could not access microphone. Please check permissions.')
+      setHasPermission(false)
+      
+      // Provide user-friendly error messages
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        setError('Microphone permission denied. Please allow microphone access in your browser settings.')
+      } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+        setError('No microphone found. Please connect a microphone and try again.')
+      } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
+        setError('Microphone is already in use by another application.')
+      } else {
+        setError('Could not access microphone. Please check your device permissions and try again.')
+      }
     }
   }
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
+      try {
+        if (mediaRecorderRef.current.state !== 'inactive') {
+          mediaRecorderRef.current.stop()
+        }
+      } catch (error) {
+        console.error('Error stopping recording:', error)
+      }
       setIsRecording(false)
       clearInterval(timerRef.current)
-      
-      // Stop all tracks
-      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop())
     }
   }
 
   const handleRecordingComplete = async (audioBlob) => {
     setIsProcessing(true)
     setError('')
+    setResponseText('')
+    setAudioUrl('')
     
     try {
+      // Validate audio blob
+      if (!audioBlob || audioBlob.size === 0) {
+        throw new Error('Recording is empty. Please try recording again.')
+      }
+
       console.log('Audio blob details:', {
         size: audioBlob.size,
         type: audioBlob.type
@@ -87,36 +222,68 @@ const VoiceRecorder = ({
       // Convert Blob to ArrayBuffer for the voiceApi service
       const arrayBuffer = await audioBlob.arrayBuffer()
       
-      console.log('ArrayBuffer size:', arrayBuffer.byteLength);
-      
-      // Use the actual voiceApi service to upload the audio and get the AI response URL
-      const audioUrl = await voiceApi.uploadVoice(arrayBuffer, `recording-${Date.now()}.wav`)
-      
-      console.log('Received audio URL:', audioUrl);
-      
-      // Create audio element for playing the AI response
-      const audio = new Audio(audioUrl)
-      audioRef.current = audio
-      
-      // Set up audio event listeners
-      audio.onplay = () => setIsPlayingResponse(true)
-      audio.onended = () => setIsPlayingResponse(false)
-      audio.onpause = () => setIsPlayingResponse(false)
-      audio.onerror = (e) => {
-        console.error('Audio playback error:', e)
-        setIsPlayingResponse(false)
-        setError('Error playing AI response audio')
+      if (arrayBuffer.byteLength === 0) {
+        throw new Error('Recording file is empty. Please try recording again.')
       }
       
-      // Test if the audio can play
-      await audio.play().catch(e => {
-        console.error('Initial audio play failed:', e)
-        setError('AI response received but cannot play audio')
-      });
+      console.log('ArrayBuffer size:', arrayBuffer.byteLength);
+      
+      // Upload audio and get both text and audio response
+      const response = await voiceApi.uploadVoice(arrayBuffer, `recording-${Date.now()}.${audioBlob.type.includes('webm') ? 'webm' : 'wav'}`)
+      
+      console.log('API Response received:', response);
+      console.log('Response text value:', response.text);
+      console.log('Response text type:', typeof response.text);
+      console.log('Response text length:', response.text?.length || 0);
+      
+      // Display text response immediately - check for truthy value and non-empty string
+      if (response.text && typeof response.text === 'string' && response.text.trim().length > 0) {
+        console.log('Setting response text:', response.text);
+        setResponseText(response.text.trim())
+      } else {
+        console.warn('No valid text in response. Response object:', response);
+        // Still set empty string to show that we got a response but no text
+        if (response.text === '' || response.text === null || response.text === undefined) {
+          console.warn('Text field exists but is empty/null/undefined');
+        }
+      }
+      
+      // Set up audio playback (if audio URL is provided)
+      if (response.audioUrl) {
+        setAudioUrl(response.audioUrl)
+        
+        // Create audio element for playing the AI response
+        const audio = new Audio(response.audioUrl)
+        audioRef.current = audio
+        
+        // Set up audio event listeners
+        audio.onplay = () => {
+          // Playing state is set by handlePlayResponse
+        }
+        audio.onended = () => {
+          setIsPlayingResponse(false)
+        }
+        audio.onpause = () => {
+          setIsPlayingResponse(false)
+        }
+        audio.onerror = (e) => {
+          console.error('Audio playback error:', e)
+          setIsPlayingResponse(false)
+          setError('Error loading audio response. Text response is still available.')
+        }
+      }
       
     } catch (error) {
       console.error('Error in handleRecordingComplete:', error)
-      setError(`Failed to process recording: ${error.message}`)
+      
+      // Provide user-friendly error messages
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        setError('Network error. Please check your internet connection and try again.')
+      } else if (error.message.includes('Upload failed')) {
+        setError(`Server error: ${error.message}. Please try again later.`)
+      } else {
+        setError(`Failed to process recording: ${error.message}`)
+      }
     } finally {
       setIsProcessing(false)
     }
@@ -124,18 +291,25 @@ const VoiceRecorder = ({
 
   const handlePlayResponse = async () => {
     if (isPlayingResponse) {
-      // Pause playback
-      audioRef.current?.pause()
+      // Pause audio playback
+      if (audioRef.current) {
+        audioRef.current.pause()
+      }
       setIsPlayingResponse(false)
     } else {
-      // Start playback
+      // Start audio playback
+      setIsPlayingResponse(true)
+      
       try {
         if (audioRef.current) {
           await audioRef.current.play()
+        } else {
+          setError('No audio response available to play')
+          setIsPlayingResponse(false)
         }
       } catch (error) {
         console.error('Error playing audio:', error)
-        setError('Error playing AI response')
+        setError('Error playing audio response')
         setIsPlayingResponse(false)
       }
     }
@@ -155,18 +329,23 @@ const VoiceRecorder = ({
     // Clean up audio
     if (audioRef.current) {
       audioRef.current.pause()
+      audioRef.current.src = ''
       audioRef.current = null
     }
+    
     setIsPlayingResponse(false)
     setShowOptions(false)
+    setResponseText('')
+    setAudioUrl('')
     setError('')
+    setShowGreeting(true)
   }
 
   return (
     <div className="voice-recorder">
       {/* HEADER */}
       <header className="recorder-header">
-        <div className="logo">Wedaj 🌿</div>
+        <div className="logo">ወዳጅ</div>
         <div className="auth-buttons">
           <button className="login-button" onClick={() =>navigate('log-in')}>Login</button>
           <button className="signup-button" onClick={()=> navigate('sign-up')}>Sign Up</button>
@@ -194,40 +373,78 @@ const VoiceRecorder = ({
         ) : (
           <div className="response-section">
             <div className="response-display">
-              <h3>Your AI Friend's Thoughts 💬</h3>
+              
               <div className="response-text">
                 {isProcessing ? (
-                  "Processing your voice... please wait 🌸"
+                  <div className="processing-state">
+                    <p>Processing your voice... please wait 🌸</p>
+                    <div className="loading-spinner"></div>
+                  </div>
                 ) : error ? (
                   <div className="error-state">
-                    <p>There was an issue processing your recording.</p>
+                    <p>⚠️ {error}</p>
                     <button className="retry-button" onClick={handleAskMore}>
                       Try Again
                     </button>
                   </div>
                 ) : (
-                  <div className="audio-response-ready">
-                    <p>Your AI response is ready! Click "Play Response" to listen. 🎵</p>
-                    <p className="response-note">Your voice has been processed and I'm here to support you. 🌿</p>
+                  <div className="response-content">
+                    {responseText && responseText.trim().length > 0 && (
+                      <div className="text-response">
+                        <p className="response-label">Response:</p>
+                        <p className="response-text-content amharic-text">{responseText}</p>
+                      </div>
+                    )}
+                    {audioUrl && audioRef.current ? (
+                      <div className="audio-response-controls">
+                        <button 
+                          className="play-audio-button" 
+                          onClick={handlePlayResponse}
+                          disabled={isProcessing || !audioRef.current}
+                          aria-label={isPlayingResponse ? "Pause audio" : "Play audio"}
+                        >
+                          {isPlayingResponse ? (
+                            <>
+                              <span>⏸️</span> Pause
+                            </>
+                          ) : (
+                            <>
+                              <span>▶️</span> Play Audio
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    ) : null}
+                    {!responseText && !audioUrl && (
+                      <div className="audio-response-ready">
+                        <p>Your response is ready! 🌿</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             </div>
             
-            {!error && (
+            {!error && !isProcessing && (
               <div className="post-recording-info">
-                <p className="instructions-small">Your reflection is ready. What would you like to do next?</p>
+                <p className="instructions-small">What would you like to do next?</p>
                 <div className="recording-options-container">
                   <div className="recording-options">
-                    <button 
-                      className="option-button read-response" 
-                      onClick={handleReadResponse}
-                      disabled={isProcessing || !audioRef.current || error}
-                    >
-                      {isPlayingResponse ? "Pause Response" : "Play Response"}
-                    </button>
+                    {audioUrl && audioRef.current ? (
+                      <button 
+                        className="option-button read-response" 
+                        onClick={handlePlayResponse}
+                        disabled={!audioRef.current}
+                      >
+                        {isPlayingResponse ? (
+                          "⏸️ Pause"
+                        ) : (
+                          "▶️ Play Audio"
+                        )}
+                      </button>
+                    ) : null}
                     <button className="option-button ask-more" onClick={handleAskMore}>
-                      {error ? "Try Again" : "Ask More 🌼"}
+                      Ask More 🌼
                     </button>
                   </div>
                 </div>
@@ -268,7 +485,7 @@ const VoiceRecorder = ({
 
         <div className="instructions">
           {isRecording ? (
-            <p>I'm listening... speak freely 💬</p>
+            <p>እየሰማሁ ነው... በነጻነት ተናገሩ 💬</p>
           ) : showOptions ? null : (
             <p>Take a deep breath and start sharing your thoughts ✨</p>
           )}
