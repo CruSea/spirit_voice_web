@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './Settings.css'
+import './settings.css'
 import { useNavigate } from 'react-router-dom'
 
 const Settings = ({ user, onLogout }) => {
