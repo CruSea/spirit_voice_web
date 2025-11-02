@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { voiceApi } from '../../services/voice.js'
 import './Recording.css'
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../Navbar/NavBar'
-import logo from '../../assets/wedaj.png'; 
+import logo from '../../assets/wedaj.png';
+
 
 const VoiceRecorder = ({
   onRecordingComplete,
