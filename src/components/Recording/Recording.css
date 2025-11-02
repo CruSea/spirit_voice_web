@@ -35,6 +35,23 @@
 .logo {
   font-size: 1.8rem;
   font-weight: 600;
+  color: #4b3cc4;
+}
+
+.auth-buttons button {
+  background: none;
+  border: 1px solid #4b3cc4;
+  color: #4b3cc4;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  margin-left: 0.6rem;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.auth-buttons button:hover {
+  background: #4b3cc4;
+  color: white;
   color: #fff;
   display: flex;
   align-items: center;
@@ -293,7 +310,8 @@
   justify-content: center;
 }
 
-.recording-options {
+/* Response content */
+.response-content {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -411,7 +429,7 @@
   }
   
   .option-button {
-    width: 100%;
+    width: 100%;https://github.com/CruSea/spirit_voice_web/pull/5/conflict?name=src%252Fcomponents%252FRecording%252FRecording.css&ancestor_oid=24da5b4871c6df39eb00f1cea0cc57930158ecca&base_oid=6931e058d0398def91541d08c8c705a5139a0695&head_oid=2c71f157a521c17972ae3c5fa5a5cdf0b1195c01
     min-width: auto;
   }
   

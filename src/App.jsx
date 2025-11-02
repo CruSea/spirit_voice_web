@@ -8,6 +8,8 @@ import UserAccount from './components/Settings/UserAccount';
 import HistoryPage from './components/VoiceJournal/HistoryPage';
 import MoodTracker from './components/MoodTracker/MoodTracker';
 import BibleGuidance from './components/BibleGuidance/BibleGuidance';
+import VoiceHistory from './components/VoiceHistory/VoiceHistory';
+import Settings from './components/Settings/Settings';
 import logo from './assets/wedaj.png'; 
 
 function App() {
@@ -73,6 +75,8 @@ function App() {
         <Route path="/records" element={<HistoryPage recordings={recordings} user={user} onLogout={handleLogout} onBackToHome={() => window.location.href='/'} />} />
         <Route path="/mood-tracker" element={<MoodTracker />} />
         <Route path="/bible-guidance" element={<BibleGuidance />} />
+        <Route path="/voice-history" element={<VoiceHistory />} />
+        <Route path="/settings" element={<Settings user={user} onLogout={handleLogout} />} />
       </Routes>
     </BrowserRouter>
   );
